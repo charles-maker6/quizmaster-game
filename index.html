@@ -1,0 +1,1174 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuizMaster - 20 Levels</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: white;
+  background: radial-gradient(circle at top, #25204c, #0b0b18);
+}
+
+.container {
+  width: 100%;
+  max-width: 680px;
+  padding: 30px;
+  background: #17172d;
+  border: 1px solid #39345f;
+  border-radius: 22px;
+  box-shadow: 0 0 40px #704bff22;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 35px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #a78bfa;
+}
+
+.tag {
+  font-size: 10px;
+  color: #c4b5fd;
+  background: #302654;
+  padding: 9px 12px;
+  border-radius: 20px;
+}
+
+.screen {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.hero {
+  font-size: 65px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 34px;
+  margin-bottom: 15px;
+}
+
+h1 span {
+  color: #a78bfa;
+}
+
+p {
+  color: #aaa7c2;
+  line-height: 1.7;
+  margin-bottom: 25px;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background: #25243e;
+  padding: 20px 10px;
+  border-radius: 14px;
+  margin-bottom: 25px;
+}
+
+.info strong {
+  display: block;
+  font-size: 23px;
+  color: #a78bfa;
+  margin-bottom: 7px;
+}
+
+.info small {
+  color: #aaa7c2;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #7c3aed, #a855f7);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px #8b5cf655;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.level-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: #c4b5fd;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.level-list {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+  margin-bottom: 25px;
+}
+
+.level-box {
+  padding: 9px 2px;
+  background: #25243e;
+  color: #77738f;
+  border-radius: 7px;
+  font-size: 12px;
+}
+
+.level-box.active {
+  background: #7c3aed;
+  color: white;
+}
+
+.level-box.completed {
+  background: #14532d;
+  color: #4ade80;
+}
+
+.quiz-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 15px;
+  color: #c4b5fd;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+#difficulty {
+  color: #fbbf24;
+}
+
+#timer {
+  font-size: 22px;
+  font-weight: bold;
+  color: #4ade80;
+  margin-bottom: 15px;
+  text-align: right;
+}
+
+#timer.warning {
+  color: #ef4444;
+  animation: pulse 0.5s infinite alternate;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+.progress-bar {
+  height: 8px;
+  background: #35334e;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+#progress {
+  width: 10%;
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #c084fc);
+  transition: width 0.3s;
+}
+
+#question {
+  font-size: 23px;
+  line-height: 1.5;
+  margin-bottom: 25px;
+}
+
+.answers {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.answer-btn {
+  padding: 16px;
+  border: 1px solid #44415f;
+  background: #25243e;
+  border-radius: 12px;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.answer-btn:hover:not(:disabled) {
+  border-color: #a78bfa;
+  background: #343052;
+}
+
+.answer-btn.correct {
+  background: #14532d;
+  border-color: #22c55e;
+}
+
+.answer-btn.wrong {
+  background: #7f1d1d;
+  border-color: #ef4444;
+}
+
+#feedback {
+  min-height: 25px;
+  font-weight: bold;
+}
+
+#feedback.good {
+  color: #4ade80;
+}
+
+#feedback.bad {
+  color: #f87171;
+}
+
+.result-score {
+  background: #25243e;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+}
+
+.result-score strong {
+  display: block;
+  font-size: 45px;
+  color: #a78bfa;
+  margin-bottom: 10px;
+}
+
+.result-score small {
+  color: #aaa7c2;
+}
+
+footer {
+  text-align: center;
+  color: #77738f;
+  font-size: 12px;
+  margin-top: 35px;
+}
+
+@media(max-width: 450px) {
+  .container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 27px;
+  }
+
+  #question {
+    font-size: 19px;
+  }
+
+  .level-list {
+    gap: 3px;
+  }
+
+  .level-box {
+    font-size: 10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <div class="logo">⚡ QuizMaster</div>
+  <div class="tag">20 LEVEL CHALLENGE</div>
+</header>
+
+<section id="welcome" class="screen">
+  <div class="hero">🧠</div>
+  <h1>Test Your <span>Knowledge</span></h1>
+
+  <p>
+    Challenge yourself with 20 levels.
+    Every level gets harder. Can you become the ultimate QuizMaster?
+    You have 15 seconds to answer each question!
+  </p>
+
+  <div class="info">
+    <div><strong>200</strong><small>Questions per run</small></div>
+    <div><strong>20</strong><small>Levels</small></div>
+    <div><strong>15s</strong><small>Per question</small></div>
+  </div>
+
+  <button onclick="startQuiz()">Start Challenge →</button>
+</section>
+
+<section id="quiz" class="screen hidden">
+
+  <div class="level-heading">
+    <span id="levelTitle">LEVEL 1</span>
+    <span id="score">⭐ 0 Points</span>
+  </div>
+
+  <div id="levelList" class="level-list"></div>
+
+  <div class="quiz-top">
+    <span id="questionNumber">QUESTION 1/10</span>
+    <span id="difficulty">EASY</span>
+  </div>
+
+  <div id="timer">⏱️ 15s</div>
+
+  <div class="progress-bar">
+    <div id="progress"></div>
+  </div>
+
+  <h2 id="question"></h2>
+
+  <div id="answers" class="answers"></div>
+
+  <p id="feedback"></p>
+
+  <button id="nextBtn" onclick="nextQuestion()" disabled>
+    Next Question →
+  </button>
+
+</section>
+
+<section id="result" class="screen hidden">
+  <div class="hero">🏆</div>
+  <h1>Quiz <span>Completed!</span></h1>
+  <p id="resultMessage">
+    You conquered every level!
+  </p>
+
+  <div class="result-score">
+    <strong>20/20</strong>
+    <small>Levels Completed</small>
+  </div>
+
+  <button onclick="startQuiz()">Play Again ↻</button>
+</section>
+
+<footer>Made with ❤️ | QuizMaster 2026</footer>
+
+</div>
+
+<script>
+
+// ======================================
+// QUESTION BANK - 20 LEVELS
+// ======================================
+
+const levels = [
+
+[
+["What is the capital of France?",["Paris","London","Rome","Madrid"],0],
+["How many days are in a week?",["5","6","7","8"],2],
+["Which planet is called the Red Planet?",["Venus","Mars","Jupiter","Saturn"],1],
+["What is 5 + 5?",["8","9","10","11"],2],
+["Which animal barks?",["Cat","Dog","Cow","Horse"],1],
+["What color do red and white make?",["Purple","Pink","Green","Orange"],1],
+["How many legs does a spider have?",["6","8","10","12"],1],
+["Which is the largest ocean?",["Atlantic","Indian","Pacific","Arctic"],2],
+["What is the opposite of hot?",["Warm","Cold","Dry","Bright"],1],
+["Which month comes after March?",["January","April","May","June"],1],
+["How many hours are in a day?",["12","18","24","30"],2],
+["Which animal is man's best friend?",["Cat","Dog","Lion","Tiger"],1],
+["What is 10 - 4?",["4","5","6","7"],2],
+["Which shape has three sides?",["Square","Triangle","Circle","Rectangle"],1],
+["What do bees produce?",["Milk","Honey","Juice","Oil"],1]
+],
+
+[
+["What is the capital of Japan?",["Seoul","Tokyo","Beijing","Bangkok"],1],
+["How many continents are there?",["5","6","7","8"],2],
+["Which gas do humans need to breathe?",["Oxygen","Carbon dioxide","Nitrogen","Helium"],0],
+["What is 12 × 5?",["50","55","60","65"],2],
+["Which is the largest land animal?",["Lion","Elephant","Giraffe","Rhino"],1],
+["Which country invented paper?",["India","Egypt","China","Greece"],2],
+["How many sides does a hexagon have?",["5","6","7","8"],1],
+["What is the freezing point of water in Celsius?",["0","10","32","100"],0],
+["Which organ pumps blood?",["Brain","Lungs","Heart","Liver"],2],
+["Which planet is closest to the Sun?",["Venus","Mercury","Earth","Mars"],1],
+["What is 9 × 7?",["56","63","72","81"],1],
+["Which instrument has black and white keys?",["Guitar","Piano","Drum","Flute"],1],
+["What is the capital of Nigeria?",["Lagos","Abuja","Kano","Ibadan"],1],
+["How many months are in a year?",["10","11","12","13"],2],
+["Which bird is known for its colorful tail?",["Eagle","Peacock","Owl","Crow"],1]
+],
+
+[
+["Who painted the Mona Lisa?",["Picasso","Leonardo da Vinci","Van Gogh","Michelangelo"],1],
+["What is the chemical symbol for gold?",["Ag","Au","Fe","Go"],1],
+["Which is the longest river in Africa?",["Nile","Congo","Niger","Zambezi"],0],
+["How many bones are in an adult human body?",["196","206","216","226"],1],
+["What is the capital of Canada?",["Toronto","Vancouver","Ottawa","Montreal"],2],
+["Who developed relativity?",["Newton","Einstein","Darwin","Galileo"],1],
+["What is the square root of 144?",["10","11","12","14"],2],
+["Which ocean is between Africa and Australia?",["Atlantic","Pacific","Indian","Arctic"],2],
+["What is the largest internal organ?",["Heart","Liver","Kidney","Lung"],1],
+["Which country has Istanbul?",["Greece","Turkey","Iran","Egypt"],1],
+["What is the chemical symbol for oxygen?",["Ox","O","Og","On"],1],
+["Which planet is famous for its rings?",["Mars","Saturn","Mercury","Venus"],1],
+["Who wrote Oliver Twist?",["Dickens","Shakespeare","Austen","Orwell"],0],
+["How many degrees are in a right angle?",["45","90","180","360"],1],
+["Which language is mainly spoken in Brazil?",["Spanish","Portuguese","French","Italian"],1]
+],
+
+[
+["What is the powerhouse of the cell?",["Nucleus","Mitochondria","Ribosome","Membrane"],1],
+["Who wrote Romeo and Juliet?",["Dickens","Shakespeare","Austen","Twain"],1],
+["What is the capital of Switzerland?",["Zurich","Geneva","Bern","Basel"],2],
+["What is the approximate speed of light?",["300,000 km/s","150,000 km/s","30,000 km/s","500,000 km/s"],0],
+["Which element has atomic number 1?",["Oxygen","Hydrogen","Helium","Carbon"],1],
+["What is the largest desert in the world?",["Sahara","Gobi","Antarctic Desert","Arabian Desert"],2],
+["Who discovered penicillin?",["Alexander Fleming","Louis Pasteur","Marie Curie","Newton"],0],
+["Which country gifted the Statue of Liberty?",["Britain","France","Germany","Spain"],1],
+["What is the currency of South Korea?",["Yen","Won","Yuan","Rupee"],1],
+["What is the hardest natural substance?",["Iron","Quartz","Diamond","Granite"],2],
+["Which gas is used by plants in photosynthesis?",["Oxygen","Carbon dioxide","Hydrogen","Nitrogen"],1],
+["What is the capital of Iceland?",["Oslo","Reykjavik","Helsinki","Stockholm"],1],
+["What is 15 squared?",["125","200","225","250"],2],
+["Which organ produces insulin?",["Liver","Pancreas","Kidney","Heart"],1],
+["Who was the first person to walk on the Moon?",["Buzz Aldrin","Neil Armstrong","Yuri Gagarin","John Glenn"],1]
+],
+
+[
+["What is the chemical symbol for potassium?",["P","Po","K","Pt"],2],
+["Who developed the laws of motion?",["Einstein","Newton","Galileo","Tesla"],1],
+["Which blood cells fight infections?",["Red cells","White cells","Platelets","Plasma"],1],
+["What is the capital of Mongolia?",["Ulaanbaatar","Astana","Tashkent","Kathmandu"],0],
+["Which layer is beneath Earth's crust?",["Outer core","Inner core","Mantle","Atmosphere"],2],
+["What is the smallest prime number?",["0","1","2","3"],2],
+["Who proposed natural selection?",["Darwin","Mendel","Newton","Faraday"],0],
+["What is the SI unit of electric current?",["Volt","Watt","Ampere","Ohm"],2],
+["Which civilization built Machu Picchu?",["Aztec","Maya","Inca","Roman"],2],
+["What is the most abundant gas in the atmosphere?",["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],1],
+["Who discovered radioactivity?",["Henri Becquerel","Newton","Darwin","Bohr"],0],
+["What is the capital of Finland?",["Oslo","Helsinki","Copenhagen","Tallinn"],1],
+["What is the chemical formula for table salt?",["H2O","NaCl","CO2","HCl"],1],
+["Which planet has the Great Red Spot?",["Mars","Jupiter","Saturn","Venus"],1],
+["What is the study of insects called?",["Botany","Entomology","Ecology","Geology"],1]
+],
+
+[
+["What is the approximate value of pi?",["2.14159","3.14159","4.14159","5.14159"],1],
+["Which particle has a negative charge?",["Proton","Neutron","Electron","Photon"],2],
+["Who wrote The Republic?",["Aristotle","Plato","Socrates","Homer"],1],
+["What is the capital of Kazakhstan?",["Bishkek","Astana","Dushanbe","Baku"],1],
+["Which vitamin is ascorbic acid?",["Vitamin A","Vitamin B12","Vitamin C","Vitamin D"],2],
+["What is water loss through plant leaves called?",["Respiration","Transpiration","Fermentation","Digestion"],1],
+["Which planet has the most prominent ring system?",["Mars","Saturn","Neptune","Earth"],1],
+["What is the study of fungi called?",["Botany","Mycology","Zoology","Ecology"],1],
+["Who is associated with a² + b² = c²?",["Euclid","Pythagoras","Euler","Fibonacci"],1],
+["What is the main component of natural gas?",["Methane","Ethane","Propane","Butane"],0],
+["What is the capital of Laos?",["Hanoi","Vientiane","Phnom Penh","Yangon"],1],
+["Which scientist developed the periodic table?",["Mendeleev","Dalton","Rutherford","Bohr"],0],
+["What is the unit of force?",["Joule","Newton","Watt","Pascal"],1],
+["Which metal is represented by Fe?",["Fluorine","Iron","Francium","Fermium"],1],
+["What is the largest planet in our solar system?",["Earth","Saturn","Jupiter","Neptune"],2]
+],
+
+[
+["What is the atomic number of carbon?",["4","6","8","12"],1],
+["Which brain part controls balance?",["Cerebrum","Cerebellum","Medulla","Hypothalamus"],1],
+["Who formulated the uncertainty principle?",["Bohr","Heisenberg","Planck","Schrödinger"],1],
+["What is the capital of Ethiopia?",["Nairobi","Addis Ababa","Kampala","Khartoum"],1],
+["Which treaty ended World War I with Germany?",["Paris","Versailles","Rome","Vienna"],1],
+["What is the SI unit of frequency?",["Newton","Joule","Hertz","Pascal"],2],
+["Which metal is liquid at room temperature?",["Iron","Mercury","Aluminium","Copper"],1],
+["What is Saturn's largest moon?",["Europa","Titan","Ganymede","Triton"],1],
+["Which civilization developed cuneiform writing?",["Sumerians","Romans","Greeks","Persians"],0],
+["What is the pH of pure water at 25°C?",["5","6","7","8"],2],
+["Who proposed the heliocentric model?",["Copernicus","Newton","Einstein","Darwin"],0],
+["What is the capital of Estonia?",["Riga","Tallinn","Vilnius","Warsaw"],1],
+["Which gas is used in many balloons?",["Oxygen","Helium","Carbon dioxide","Chlorine"],1],
+["What is the study of fossils called?",["Paleontology","Astronomy","Mycology","Genetics"],0],
+["Which organ filters blood to produce urine?",["Heart","Kidney","Liver","Lung"],1]
+],
+
+[
+["Who introduced the concept of the photon?",["Einstein","Newton","Bohr","Feynman"],0],
+["What is the capital of Bhutan?",["Thimphu","Kathmandu","Dhaka","Colombo"],0],
+["Which enzyme unwinds DNA during replication?",["Ligase","Helicase","Amylase","Lipase"],1],
+["What is Earth's approximate escape velocity?",["5.2 km/s","7.9 km/s","11.2 km/s","15.6 km/s"],2],
+["Who wrote The Wealth of Nations?",["Marx","Adam Smith","Locke","Ricardo"],1],
+["Which element has the chemical symbol W?",["Tungsten","Tin","Titanium","Tantalum"],0],
+["What is the deepest known ocean trench?",["Java","Tonga","Mariana","Puerto Rico"],2],
+["Who discovered the neutron?",["Chadwick","Rutherford","Thomson","Dalton"],0],
+["What is the study of earthquakes called?",["Meteorology","Seismology","Geology","Volcanology"],1],
+["Which constant is approximately 2.71828?",["Pi","Phi","Euler's number","Avogadro's number"],2],
+["Who proposed general relativity?",["Einstein","Newton","Faraday","Maxwell"],0],
+["What is the capital of Moldova?",["Chisinau","Sofia","Skopje","Tirana"],0],
+["What is the SI unit of pressure?",["Newton","Pascal","Joule","Watt"],1],
+["Which part of a cell contains most of its DNA?",["Nucleus","Ribosome","Cell wall","Cytoplasm"],0],
+["What is the direct change from solid to gas called?",["Condensation","Sublimation","Evaporation","Freezing"],1]
+],
+
+[
+["What is the SI unit of magnetic flux?",["Tesla","Weber","Henry","Gauss"],1],
+["Who developed the laws of planetary motion?",["Copernicus","Kepler","Galileo","Brahe"],1],
+["What is the capital of Kyrgyzstan?",["Dushanbe","Bishkek","Ashgabat","Samarkand"],1],
+["What converts ammonia into nitrites?",["Denitrification","Nitrification","Fixation","Ammonification"],1],
+["What is Earth's approximate age?",["2.5 billion","3.2 billion","4.54 billion","6 billion"],2],
+["Who wrote Critique of Pure Reason?",["Hegel","Immanuel Kant","Descartes","Nietzsche"],1],
+["What is the smallest unit of a chemical element?",["Molecule","Atom","Electron","Compound"],1],
+["Which vessel carries oxygenated blood from lungs to heart?",["Pulmonary artery","Aorta","Pulmonary vein","Vena cava"],2],
+["What is the boundary around a black hole called?",["Singularity","Event horizon","Accretion disk","Photon sphere"],1],
+["Who developed comparative advantage theory?",["Keynes","David Ricardo","Adam Smith","Friedman"],1],
+["What is the capital of Eritrea?",["Asmara","Djibouti","Mogadishu","Juba"],0],
+["Which field studies properties of integers?",["Topology","Number theory","Calculus","Geometry"],1],
+["What is the SI unit of electrical resistance?",["Volt","Ohm","Ampere","Watt"],1],
+["Who developed evolution by natural selection?",["Darwin","Pasteur","Curie","Bohr"],0],
+["What is the largest artery in the human body?",["Vena cava","Aorta","Pulmonary vein","Carotid"],1]
+],
+
+[
+["What is a mathematical structure with an associative operation, identity and inverses called?",["Ring","Field","Group","Vector space"],2],
+["Who formulated the wave equation of quantum mechanics?",["Born","Schrödinger","Dirac","Heisenberg"],1],
+["What is the capital of Suriname?",["Georgetown","Paramaribo","Cayenne","Belmopan"],1],
+["Which theorem says every non-constant complex polynomial has a root?",["Pythagorean","Fundamental theorem of algebra","Fermat's last","Binomial"],1],
+["Which element has the highest electronegativity?",["Oxygen","Chlorine","Fluorine","Nitrogen"],2],
+["Who proved the incompleteness theorems?",["Kurt Gödel","Alan Turing","Bertrand Russell","Georg Cantor"],0],
+["Which particle mediates the electromagnetic force?",["Gluon","Photon","W boson","Higgs boson"],1],
+["What is the SI unit of catalytic activity?",["Mole","Katal","Joule","Pascal"],1],
+["Which treaty established the European Economic Community in 1957?",["Maastricht","Rome","Lisbon","Amsterdam"],1],
+["What boundary separates Earth's mantle and outer core?",["Moho","Gutenberg","Lehmann","Conrad"],1],
+["Who is associated with the halting problem?",["Alan Turing","Kurt Gödel","Euclid","Pascal"],0],
+["What is the capital of Tajikistan?",["Bishkek","Dushanbe","Tashkent","Ashgabat"],1],
+["Which particle carries the strong nuclear force?",["Photon","Gluon","Electron","Neutrino"],1],
+["What is the ratio of a circle's circumference to its diameter?",["Euler's number","Pi","Phi","Tau"],1],
+["Who observed the expansion of the universe?",["Edwin Hubble","Isaac Newton","Niels Bohr","James Chadwick"],0]
+],
+
+[
+["Which scientist proposed the laws of inheritance?",["Darwin","Gregor Mendel","Newton","Pasteur"],1],
+["What is the capital of Uzbekistan?",["Samarkand","Bukhara","Tashkent","Dushanbe"],2],
+["Which gas is known as laughing gas?",["Nitrous oxide","Carbon monoxide","Oxygen","Hydrogen"],0],
+["What is the derivative of x²?",["x","2x","x²","2"],1],
+["Which organelle makes proteins?",["Ribosome","Nucleus","Golgi body","Lysosome"],0],
+["Who wrote The Divine Comedy?",["Dante","Homer","Virgil","Shakespeare"],0],
+["What is the SI unit of energy?",["Newton","Joule","Watt","Pascal"],1],
+["Which country was formerly called Persia?",["Iraq","Iran","Turkey","Syria"],1],
+["What is the largest artery in the human body?",["Aorta","Vena cava","Carotid","Pulmonary artery"],0],
+["Which mathematician developed set theory?",["Georg Cantor","Euclid","Pascal","Gauss"],0],
+["What is the chemical symbol for antimony?",["Am","At","Sb","An"],2],
+["Which planet rotates on its side?",["Mars","Uranus","Mercury","Venus"],1],
+["What is the capital of Senegal?",["Dakar","Bamako","Accra","Lome"],0],
+["Which scientist discovered X-rays?",["Wilhelm Röntgen","Marie Curie","Faraday","Bohr"],0],
+["What is the mathematical name for a number divisible only by 1 and itself?",["Composite","Prime","Rational","Irrational"],1]
+],
+
+[
+["What is the powerhouse of a plant cell?",["Chloroplast","Mitochondria","Nucleus","Vacuole"],1],
+["Who discovered the circulation of blood?",["William Harvey","Louis Pasteur","Robert Hooke","Darwin"],0],
+["What is the capital of Madagascar?",["Maputo","Antananarivo","Nairobi","Lusaka"],1],
+["What is the golden ratio approximately?",["1.414","1.618","2.718","3.142"],1],
+["What is the study of ancient languages called?",["Linguistics","Philology","Biology","Geography"],1],
+["Which element has atomic number 26?",["Copper","Iron","Zinc","Nickel"],1],
+["What is the boundary between Earth's crust and mantle called?",["Gutenberg","Moho","Lehmann","Conrad"],1],
+["Who developed the first successful polio vaccine?",["Jonas Salk","Alexander Fleming","Edward Jenner","Robert Koch"],0],
+["Who wrote Leviathan?",["Hobbes","Locke","Plato","Aristotle"],0],
+["What is the capital of Albania?",["Tirana","Skopje","Sofia","Sarajevo"],0],
+["What is the SI unit of power?",["Joule","Watt","Newton","Volt"],1],
+["Which branch studies shapes and spaces?",["Algebra","Geometry","Statistics","Calculus"],1],
+["What is the chemical symbol for silver?",["Si","Ag","Au","S"],1],
+["Who wrote The Odyssey?",["Homer","Virgil","Dante","Sophocles"],0],
+["What is the largest moon in our solar system?",["Titan","Ganymede","Europa","Callisto"],1]
+],
+
+[
+["What is the charge of a neutron?",["Positive","Negative","Neutral","Variable"],2],
+["Which enzyme breaks down starch?",["Lipase","Amylase","Pepsin","Lactase"],1],
+["What is the capital of Namibia?",["Windhoek","Gaborone","Lusaka","Harare"],0],
+["Which law relates pressure and volume at constant temperature?",["Charles's law","Boyle's law","Newton's law","Ohm's law"],1],
+["What is Avogadro's constant approximately?",["6.022 × 10²³","3.14 × 10²","9.81","1.602 × 10⁻¹⁹"],0],
+["Who developed the uncertainty principle?",["Einstein","Heisenberg","Bohr","Planck"],1],
+["What is the main ore of aluminium?",["Hematite","Bauxite","Galena","Magnetite"],1],
+["Which part of the eye controls incoming light?",["Retina","Iris","Cornea","Lens"],1],
+["What is the capital of Latvia?",["Tallinn","Vilnius","Riga","Warsaw"],2],
+["Which particles are found in an atomic nucleus?",["Electrons only","Protons and neutrons","Neutrons only","Electrons and protons"],1],
+["What is the study of weather called?",["Geology","Meteorology","Seismology","Ecology"],1],
+["Which gas is released during photosynthesis?",["Carbon dioxide","Oxygen","Nitrogen","Methane"],1],
+["Which scientist proposed continental drift?",["Alfred Wegener","Charles Lyell","James Hutton","Louis Agassiz"],0],
+["What is the chemical symbol for lead?",["Le","Pb","Ld","Pl"],1],
+["Which organ produces bile?",["Heart","Liver","Kidney","Pancreas"],1]
+],
+
+[
+["What is the SI unit of inductance?",["Tesla","Henry","Weber","Farad"],1],
+["Which law relates voltage, current and resistance?",["Boyle's law","Ohm's law","Hooke's law","Kepler's law"],1],
+["What is the speed of sound in air approximately?",["343 m/s","150 m/s","500 m/s","1000 m/s"],0],
+["Which particle has no electric charge?",["Proton","Electron","Neutron","Positron"],2],
+["What is the SI unit of luminous intensity?",["Lux","Candela","Lumen","Watt"],1],
+["Who discovered electromagnetic induction?",["Faraday","Newton","Einstein","Bohr"],0],
+["What is Earth's gravitational acceleration approximately?",["3.7 m/s²","9.8 m/s²","15 m/s²","24.8 m/s²"],1],
+["Which lens corrects short-sightedness?",["Convex","Concave","Cylindrical only","Plano"],1],
+["Which electromagnetic waves have the shortest wavelength?",["Radio waves","Microwaves","X-rays","Gamma rays"],3],
+["What is the SI unit of capacitance?",["Henry","Farad","Ohm","Tesla"],1],
+["What explains buoyancy?",["Pascal's principle","Archimedes' principle","Bernoulli's principle","Newton's principle"],1],
+["Which quantity is measured in joules?",["Force","Energy","Power","Pressure"],1],
+["What is the SI unit of magnetic field strength?",["Tesla","Joule","Watt","Newton"],0],
+["Which scientist discovered the electron?",["J.J. Thomson","Rutherford","Chadwick","Bohr"],0],
+["What type of energy does a moving object possess?",["Potential","Kinetic","Chemical","Nuclear"],1]
+],
+
+[
+["Who was the first emperor of Rome?",["Julius Caesar","Augustus","Nero","Trajan"],1],
+["In which year did World War II end?",["1943","1944","1945","1946"],2],
+["Which empire built the Colosseum?",["Greek","Roman","Ottoman","Persian"],1],
+["Who was the first woman to win a Nobel Prize?",["Ada Lovelace","Marie Curie","Rosalind Franklin","Jane Goodall"],1],
+["Which ancient city was buried by Mount Vesuvius?",["Athens","Pompeii","Sparta","Carthage"],1],
+["Who led India's nonviolent independence movement?",["Nehru","Mahatma Gandhi","Subhas Bose","Akbar"],1],
+["Which civilization built the pyramids at Giza?",["Romans","Ancient Egyptians","Greeks","Persians"],1],
+["What ship carried the Pilgrims in 1620?",["Santa Maria","Mayflower","Endeavour","Beagle"],1],
+["Which wall fell in 1989?",["Great Wall","Berlin Wall","Hadrian's Wall","Wailing Wall"],1],
+["Who was the first US president?",["Lincoln","George Washington","John Adams","Jefferson"],1],
+["Which empire was ruled by Suleiman the Magnificent?",["Mongol","Ottoman","Roman","British"],1],
+["What was the ancient Egyptian writing system called?",["Cuneiform","Hieroglyphics","Latin","Runes"],1],
+["Who was the first woman to fly solo across the Atlantic?",["Amelia Earhart","Bessie Coleman","Valentina Tereshkova","Harriet Quimby"],0],
+["Which civilization developed democracy in Athens?",["Roman","Greek","Egyptian","Persian"],1],
+["In which year did Nigeria gain independence?",["1957","1960","1963","1970"],1]
+],
+
+[
+["What is the derivative of sin(x)?",["-sin(x)","cos(x)","tan(x)","-cos(x)"],1],
+["What is 7 factorial?",["5040","720","4032","120"],0],
+["What is the sum of the interior angles of a hexagon?",["540°","600°","720°","900°"],2],
+["What is the integral of 1/x?",["x²","ln|x| + C","1/x²","eˣ"],1],
+["What is decimal 10 in binary?",["1001","1010","1100","1110"],1],
+["Which number is irrational?",["0.5","3/4","√2","2"],2],
+["What is the determinant of a 2×2 identity matrix?",["0","1","2","4"],1],
+["What is the next prime after 31?",["33","35","37","39"],2],
+["What is the sum of the first 10 positive integers?",["45","50","55","60"],2],
+["What is log₁₀(1000)?",["2","3","10","100"],1],
+["What is the slope of a horizontal line?",["0","1","Undefined","-1"],0],
+["What is the probability of two heads in two fair coin tosses?",["1/2","1/3","1/4","3/4"],2],
+["What is the sum of angles in a triangle?",["90°","180°","270°","360°"],1],
+["What is 2 to the power of 10?",["512","1024","2048","256"],1],
+["What is the greatest common divisor of 24 and 36?",["6","8","12","18"],2]
+],
+
+[
+["Who invented the World Wide Web?",["Bill Gates","Tim Berners-Lee","Steve Jobs","Alan Turing"],1],
+["What does CPU stand for?",["Central Processing Unit","Computer Personal Utility","Core Program Unit","Central Power Utility"],0],
+["Which language structures web pages?",["CSS","HTML","SQL","Python"],1],
+["What does RAM stand for?",["Read Access Memory","Random Access Memory","Rapid Application Module","Remote Access Machine"],1],
+["Which protocol secures web browsing?",["HTTP","FTP","HTTPS","SMTP"],2],
+["What does SQL primarily manage?",["Databases","Images","Sound","Networks"],0],
+["Who designed Python?",["James Gosling","Guido van Rossum","Dennis Ritchie","Bjarne Stroustrup"],1],
+["What does GPU stand for?",["General Processing Utility","Graphics Processing Unit","Graphical Program User","Global Processing Unit"],1],
+["Which data structure follows FIFO?",["Stack","Queue","Tree","Graph"],1],
+["What is the base of hexadecimal?",["2","8","10","16"],3],
+["Which language styles web pages?",["HTML","CSS","SQL","C"],1],
+["What does API stand for?",["Application Programming Interface","Advanced Program Internet","Applied Processing Input","Application Program Installation"],0],
+["What does URL stand for?",["Uniform Resource Locator","Universal Reading Link","User Reference List","Uniform Record Language"],0],
+["Which company developed the Android operating system initially?",["Apple","Android Inc.","Microsoft","Nokia"],1],
+["What does HTTP stand for?",["Hypertext Transfer Protocol","High Transfer Text Program","Hyperlink Text Processing","Home Tool Transfer Protocol"],0]
+],
+
+[
+["Which fundamental force is strongest?",["Gravity","Electromagnetic","Strong nuclear","Weak nuclear"],2],
+["What is the antimatter counterpart of an electron?",["Proton","Positron","Neutron","Muon"],1],
+["Who proposed the exclusion principle?",["Pauli","Fermi","Bohr","Dirac"],0],
+["What is the chemical formula of ozone?",["O2","O3","CO2","H2O2"],1],
+["Which RNA carries amino acids to the ribosome?",["mRNA","tRNA","rRNA","snRNA"],1],
+["What is the half-life of carbon-14 approximately?",["5730 years","1000 years","10,000 years","50,000 years"],0],
+["Which layer of the Sun is visible as its surface?",["Corona","Photosphere","Chromosphere","Core"],1],
+["What process creates heavier elements inside stars?",["Photosynthesis","Nucleosynthesis","Electrolysis","Fermentation"],1],
+["Which blood type is often called the universal red-cell donor?",["AB positive","O negative","A positive","B negative"],1],
+["What is the main component of Earth's inner core?",["Silicon","Iron","Oxygen","Carbon"],1],
+["Who proposed continental drift?",["Alfred Wegener","Charles Lyell","James Hutton","Louis Agassiz"],0],
+["What is the SI unit of absorbed radiation dose?",["Sievert","Gray","Becquerel","Curie"],1],
+["Which particle has the smallest mass among these?",["Proton","Neutron","Electron","Alpha particle"],2],
+["What is the main function of DNA?",["Store genetic information","Produce energy","Digest food","Transport oxygen"],0],
+["Which gas makes up most of the Sun?",["Oxygen","Hydrogen","Nitrogen","Carbon dioxide"],1]
+],
+
+[
+["Which theorem relates symmetries to conservation laws?",["Noether's theorem","Bayes' theorem","Green's theorem","Stokes' theorem"],0],
+["What was the first artificial satellite?",["Explorer 1","Sputnik 1","Vanguard 1","Luna 1"],1],
+["Who proved Fermat's Last Theorem?",["Andrew Wiles","Pierre de Fermat","Leonhard Euler","Carl Gauss"],0],
+["What is the capital of Bhutan?",["Thimphu","Kathmandu","Dhaka","Colombo"],0],
+["Who wrote The General Theory of Employment, Interest and Money?",["Adam Smith","John Maynard Keynes","David Ricardo","Milton Friedman"],1],
+["What is the boundary around a black hole called?",["Event horizon","Photosphere","Magnetosphere","Heliopause"],0],
+["Which element is named after Ytterby?",["Yttrium","Uranium","Polonium","Radium"],0],
+["What is the study of continuous deformation called?",["Topology","Arithmetic","Trigonometry","Combinatorics"],0],
+["Who discovered the positron?",["Carl Anderson","James Chadwick","Ernest Rutherford","Paul Dirac"],0],
+["What is the capital of Montenegro?",["Podgorica","Belgrade","Sarajevo","Tirana"],0],
+["Which agreement ended the Thirty Years' War?",["Utrecht","Peace of Westphalia","Paris","Vienna"],1],
+["What is the largest known volcano in the solar system?",["Mauna Loa","Olympus Mons","Everest","Elysium Mons"],1],
+["Which scientist developed the laws of inheritance?",["Gregor Mendel","Charles Darwin","Isaac Newton","Albert Einstein"],0],
+["Which mathematical problem concerns the distribution of prime numbers?",["Riemann hypothesis","Pythagorean theorem","Four-color theorem","Bayes' theorem"],0],
+["Which country has the ancient city of Petra?",["Egypt","Jordan","Lebanon","Syria"],1]
+],
+
+[
+["What is Einstein's field equation in general relativity?",["E=mc²","Gμν + Λgμν = 8πGTμν","F=ma","PV=nRT"],1],
+["Who introduced transfinite numbers?",["Georg Cantor","Kurt Gödel","Alan Turing","David Hilbert"],0],
+["What is a hypothetical dark matter particle called in some theories?",["W boson","WIMP","Photon","Gluon"],1],
+["Which theorem states every finite integral domain is a field?",["Lagrange's theorem","Finite integral domain theorem","Fermat's theorem","Bayes' theorem"],1],
+["Who helped develop quantum electrodynamics?",["Richard Feynman","Isaac Newton","Niels Bohr","Michael Faraday"],0],
+["What is the capital of Kazakhstan?",["Almaty","Astana","Bishkek","Tashkent"],1],
+["Which conjecture was proved by Grigori Perelman?",["Goldbach conjecture","Poincaré conjecture","Riemann hypothesis","Collatz conjecture"],1],
+["What is the hypothetical quantum of gravity called?",["Photon","Graviton","Gluon","Higgs boson"],1],
+["Who formulated the modern mathematical laws of thermodynamics?",["Rudolf Clausius","Charles Darwin","James Watt","Gregor Mendel"],0],
+["What boundary separates observable and unobservable regions of the universe?",["Event horizon","Cosmic horizon","Schwarzschild radius","Roche limit"],1],
+["Who is associated with the incompleteness theorem?",["Kurt Gödel","Euclid","Pythagoras","Fibonacci"],0],
+["What is the Feigenbaum constant approximately?",["1.618","2.718","4.669","3.142"],2],
+["Which mathematical field studies abstract algebraic structures?",["Abstract algebra","Meteorology","Botany","Geography"],0],
+["What is the capital of Suriname?",["Georgetown","Paramaribo","Cayenne","Belmopan"],1],
+["Which scientist developed the wave equation of quantum mechanics?",["Born","Schrödinger","Dirac","Heisenberg"],1]
+]
+
+];
+
+// ======================================
+// GAME SETTINGS
+// ======================================
+
+const difficulties = [
+"EASY",
+"BEGINNER",
+"NORMAL",
+"INTERMEDIATE",
+"ADVANCED",
+"EXPERT",
+"MASTER",
+"LEGEND",
+"GRANDMASTER",
+"ULTIMATE",
+"GENIUS",
+"SCHOLAR",
+"SCIENCE MASTER",
+"PHYSICS EXPERT",
+"HISTORY MASTER",
+"MATH MASTER",
+"TECH EXPERT",
+"SCIENCE LEGEND",
+"GRANDMASTER II",
+"ULTIMATE LEGEND"
+];
+
+let currentLevel = 0;
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+let failed = false;
+let currentQuestions = [];
+
+let usedQuestions = levels.map(() => []);
+
+let timeLeft = 15;
+let timerInterval = null;
+
+const welcome = document.getElementById("welcome");
+const quiz = document.getElementById("quiz");
+const result = document.getElementById("result");
+
+const questionText = document.getElementById("question");
+const answersBox = document.getElementById("answers");
+const feedback = document.getElementById("feedback");
+const nextBtn = document.getElementById("nextBtn");
+
+// ======================================
+// TIMER
+// ======================================
+
+function startTimer() {
+
+  clearInterval(timerInterval);
+
+  timeLeft = 15;
+
+  updateTimerDisplay();
+
+  timerInterval = setInterval(() => {
+
+    timeLeft--;
+
+    updateTimerDisplay();
+
+    if (timeLeft <= 0) {
+
+      clearInterval(timerInterval);
+
+      if (!answered) {
+        selectAnswer(-1);
+      }
+
+    }
+
+  }, 1000);
+
+}
+
+function updateTimerDisplay() {
+
+  const timer = document.getElementById("timer");
+
+  timer.textContent = `⏱️ ${timeLeft}s`;
+
+  timer.classList.toggle("warning", timeLeft <= 5);
+
+}
+
+// ======================================
+// RANDOM QUESTION SELECTION
+// ======================================
+
+function getNewQuestions(levelIndex) {
+
+  const bank = levels[levelIndex];
+
+  let used = usedQuestions[levelIndex];
+
+  let available = bank
+    .map((question, index) => ({ question, index }))
+    .filter(item => !used.includes(item.index));
+
+  if (available.length < 10) {
+
+    usedQuestions[levelIndex] = [];
+
+    used = [];
+
+    available = bank.map((question, index) => ({
+      question,
+      index
+    }));
+
+  }
+
+  for (let i = available.length - 1; i > 0; i--) {
+
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [available[i], available[j]] =
+      [available[j], available[i]];
+
+  }
+
+  const selected = available.slice(0, 10);
+
+  selected.forEach(item => {
+    usedQuestions[levelIndex].push(item.index);
+  });
+
+  return selected.map(item => item.question);
+
+}
+
+// ======================================
+// START GAME
+// ======================================
+
+function startQuiz() {
+
+  clearInterval(timerInterval);
+
+  currentLevel = 0;
+  currentQuestion = 0;
+  score = 0;
+  failed = false;
+
+  usedQuestions = levels.map(() => []);
+
+  welcome.classList.add("hidden");
+  result.classList.add("hidden");
+  quiz.classList.remove("hidden");
+
+  currentQuestions = getNewQuestions(currentLevel);
+
+  showQuestion();
+
+}
+
+// ======================================
+// UPDATE LEVEL DISPLAY
+// ======================================
+
+function updateLevels() {
+
+  const list = document.getElementById("levelList");
+
+  list.innerHTML = "";
+
+  levels.forEach((_, index) => {
+
+    const box = document.createElement("div");
+
+    box.className = "level-box";
+
+    box.textContent = index + 1;
+
+    if (index < currentLevel) {
+      box.classList.add("completed");
+    }
+
+    if (index === currentLevel) {
+      box.classList.add("active");
+    }
+
+    list.appendChild(box);
+
+  });
+
+}
+
+// ======================================
+// SHOW QUESTION
+// ======================================
+
+function showQuestion() {
+
+  answered = false;
+
+  startTimer();
+
+  const q = currentQuestions[currentQuestion];
+
+  document.getElementById("levelTitle").textContent =
+    `LEVEL ${currentLevel + 1}/20`;
+
+  document.getElementById("questionNumber").textContent =
+    `QUESTION ${currentQuestion + 1}/10`;
+
+  document.getElementById("difficulty").textContent =
+    difficulties[currentLevel];
+
+  document.getElementById("score").textContent =
+    `⭐ ${score} Points`;
+
+  questionText.textContent = q[0];
+
+  document.getElementById("progress").style.width =
+    `${(currentQuestion + 1) * 10}%`;
+
+  answersBox.innerHTML = "";
+
+  feedback.textContent = "";
+
+  feedback.className = "";
+
+  nextBtn.disabled = true;
+
+  nextBtn.textContent = "Next Question →";
+
+  updateLevels();
+
+  q[1].forEach((answer, index) => {
+
+    const button = document.createElement("button");
+
+    button.className = "answer-btn";
+
+    button.textContent =
+      `${String.fromCharCode(65 + index)}. ${answer}`;
+
+    button.onclick = () => selectAnswer(index);
+
+    answersBox.appendChild(button);
+
+  });
+
+}
+
+// ======================================
+// CHECK ANSWER
+// ======================================
+
+function selectAnswer(selectedIndex) {
+
+  if (answered) return;
+
+  answered = true;
+
+  clearInterval(timerInterval);
+
+  const q = currentQuestions[currentQuestion];
+
+  const buttons = answersBox.querySelectorAll("button");
+
+  buttons.forEach((button, index) => {
+
+    button.disabled = true;
+
+    if (index === q[2]) {
+      button.classList.add("correct");
+    }
+
+    if (index === selectedIndex && index !== q[2]) {
+      button.classList.add("wrong");
+    }
+
+  });
+
+  if (selectedIndex === q[2]) {
+
+    score++;
+
+    feedback.textContent = "✓ Correct! Keep going!";
+
+    feedback.className = "good";
+
+    nextBtn.disabled = false;
+
+    if (currentQuestion === 9) {
+      nextBtn.textContent = "Complete Level 🏆";
+    }
+
+  } else {
+
+    failed = true;
+
+    if (selectedIndex === -1) {
+
+      feedback.textContent =
+        `⏰ TIME'S UP! Correct answer: ${q[1][q[2]]}.`;
+
+    } else {
+
+      feedback.textContent =
+        `✗ Wrong! Correct answer: ${q[1][q[2]]}.`;
+
+    }
+
+    feedback.className = "bad";
+
+    nextBtn.disabled = false;
+
+    nextBtn.textContent = "New Questions ↻";
+
+  }
+
+  document.getElementById("score").textContent =
+    `⭐ ${score} Points`;
+
+}
+
+// ======================================
+// NEXT QUESTION
+// ======================================
+
+function nextQuestion() {
+
+  if (!answered) return;
+
+  if (failed) {
+
+    currentQuestion = 0;
+
+    score = 0;
+
+    failed = false;
+
+    currentQuestions = getNewQuestions(currentLevel);
+
+    showQuestion();
+
+    return;
+
+  }
+
+  if (currentQuestion < 9) {
+
+    currentQuestion++;
+
+    showQuestion();
+
+    return;
+
+  }
+
+  completeLevel();
+
+}
+
+// ======================================
+// COMPLETE LEVEL
+// ======================================
+
+function completeLevel() {
+
+  clearInterval(timerInterval);
+
+  if (currentLevel < 19) {
+
+    currentLevel++;
+
+    currentQuestion = 0;
+
+    currentQuestions = getNewQuestions(currentLevel);
+
+    alert(
+      `🎉 LEVEL COMPLETED! Welcome to Level ${currentLevel + 1}: ${difficulties[currentLevel]}!`
+    );
+
+    showQuestion();
+
+  } else {
+
+    showResults();
+
+  }
+
+}
+
+// ======================================
+// FINAL RESULTS
+// ======================================
+
+function showResults() {
+
+  clearInterval(timerInterval);
+
+  quiz.classList.add("hidden");
+
+  result.classList.remove("hidden");
+
+  document.getElementById("resultMessage").textContent =
+    "🏆 AMAZING! YOU CONQUERED ALL 20 LEVELS!";
+
+}
+
+</script>
+
+</body>
+</html>
